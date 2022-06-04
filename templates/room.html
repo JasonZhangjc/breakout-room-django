@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Welcome to breakout-room application</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <style type="text/css">
+        #left_text {
+            position: absolute;
+            left: 0px;
+            padding: 3px;
+            padding-left: 6px;
+            padding-right: 6px;
+            border-radius: 5px;
+            color: white;
+            background-color: #0079E5;
+        }
+    </style>
+
+</head>
+<body>
+    <div style="position: relative; height: 100vh; width: 100vw;" class="d-flex justify-content-center align-items-center">
+        <h1 style="top: 0;position: absolute;">Welcome to the breakout-room <span style="color: #0079E5">{{room_number}}</span></h1>
+
+        <div id="messages_container" style="overflow-y: auto;width: 40vw;height: 80vh;position: relative;" class="container">
+            <!-- <div id="left_text">Hello!</div>
+            <br>
+            <br>
+            <div id="left_text">Hi, how are you?</div> -->
+        </div>
+
+        <div style="position: absolute;bottom: 20px;width: 100vw;" class="d-flex justify-content-center">
+            <input id="message_input_field" class="form-control" style="text-align: center;width: 40vw" type="text" name="">
+            <input id="send_button" class="btn btn-primary" value="Send" type="submit" name="">
+        </div>
+        
+    </div>
+    
+</body>
+</html>
+
+<script type="text/javascript">
+
+    // const io = require('socket.io')(server, {
+    //     pingTimeout: 60000,
+    // });
+    
+    const breakoutSocket = new WebSocket('ws://'+window.location.host+'/ws/breakout/{{room_number}}/');
+
+    document.querySelector('#send_button').onclick = function(e) {
+        const message = document.querySelector('#message_input_field').value;
+        breakoutSocket.send(JSON.stringify({'message':'{{user_name}} : ' + message}));
+        document.querySelector('#message_input_field').value = '';
+    }
+
+    document.querySelector('#message_input_field').onkeyup = function (e) {
+        if(e.keyCode==13) {
+            document.querySelector('#send_button').click();
+        }
+    }
+
+    function scrollToBottom() {
+        document.querySelector('#messages_container').scrollTo({top:document.querySelector('#messages_container').scrollHeight, behaviour: 'smooth'});
+    }
+
+    breakoutSocket.onmessage = function(e) {
+        const data = JSON.parse(e.data);
+        document.querySelector('#messages_container').innerHTML += '<div id="left_text">' + data.message + '</div>' + '<br><br>';
+        scrollToBottom();
+    }
+
+</script>
