@@ -24,10 +24,12 @@
         <h1 style="top: 0;position: absolute;">Welcome to the breakout-room <span style="color: #0079E5">{{room_number}}</span></h1>
 
         <div id="messages_container" style="overflow-y: auto;width: 40vw;height: 80vh;position: relative;" class="container">
-            <!-- <div id="left_text">Hello!</div>
+            {% for message in messages %}
+            <div id="left_text">{{message}}</div>
             <br>
             <br>
-            <div id="left_text">Hi, how are you?</div> -->
+            {% endfor %}
+            <!-- <div id="left_text">Hi, how are you?</div> -->
         </div>
 
         <div style="position: absolute;bottom: 20px;width: 100vw;" class="d-flex justify-content-center">
